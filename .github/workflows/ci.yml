@@ -1,0 +1,59 @@
+name: CI - .NET 8 (caller)
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    uses: <ORG>/<REPO1>/.github/workflows/dotnet-build.yml@v1
+    with:
+      runner: ubuntu-latest
+      dotnet_version: 8.0.x
+      configuration: Release
+
+  test:
+    needs: build
+    uses: <ORG>/<REPO1>/.github/workflows/dotnet-test.yml@v1
+    with:
+      runner: ubuntu-latest
+      dotnet_version: 8.0.x
+      configuration: Release
+
+  publish:
+    needs: test
+    uses: <ORG>/<REPO1>/.github/workflows/dotnet-publish.yml@v1
+    with:
+      runner: ubuntu-latest
+      dotnet_version: 8.0.x
+      configuration: Release
+      publish_output: ./publish
+      artifact_name: dotnet-publish-output
+
+  docker_build:
+    needs: publish
+    uses: <ORG>/<REPO1>/.github/workflows/docker-build.yml@v1
+    with:
+      runner: ubuntu-latest
+      image_name: dotnet8-sample
+      image_tag: latest
+      dockerfile: Dockerfile
+      context: .
+      docker_image_artifact: docker-image
+
+  docker_push:
+    needs: docker_build
+    # enable this job only when you are ready to push
+    if: ${{ false }}
+    uses: <ORG>/<REPO1>/.github/workflows/docker-push.yml@v1
+    with:
+      runner: ubuntu-latest
+      registry: <your-container-registry>
+      image_name: dotnet8-sample
+      image_tag: latest
+      docker_image_artifact: docker-image
+    secrets:
+      REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+      REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
