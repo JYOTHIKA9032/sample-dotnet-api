@@ -22,12 +22,14 @@ jobs:
       dotnet_version: 8.0.x
       configuration: Release
 
+
   publish:
     needs: test
     uses: JYOTHIKA9032/dotnet-reusable-workflows/.github/workflows/dotnet-publish.yml@v1
     with:
       runner: ubuntu-latest
       dotnet_version: 8.0.x
+      project_path: src/Sample.Api/Sample.Api.csproj   # ✅ REQUIRED
       configuration: Release
       publish_output: ./publish
       artifact_name: dotnet-publish-output
