@@ -28,7 +28,7 @@ jobs:
     with:
       runner: ubuntu-latest
       dotnet_version: 8.0.x
-      project_path: src/Sample.Api/Sample.Api.csproj
+      project_path: src/Myapp/MyApp.csproj
       configuration: Release
       publish_output: ./publish
       artifact_name: dotnet-publish-output
