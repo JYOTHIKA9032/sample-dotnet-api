@@ -22,14 +22,13 @@ jobs:
       dotnet_version: 8.0.x
       configuration: Release
 
-
   publish:
     needs: test
     uses: JYOTHIKA9032/dotnet-reusable-workflows/.github/workflows/dotnet-publish.yml@v1
     with:
       runner: ubuntu-latest
       dotnet_version: 8.0.x
-      project_path: src/Sample.Api/Sample.Api.csproj   # ✅ REQUIRED
+      project_path: src/Sample.Api/Sample.Api.csproj
       configuration: Release
       publish_output: ./publish
       artifact_name: dotnet-publish-output
@@ -45,16 +44,18 @@ jobs:
       context: .
       docker_image_artifact: docker-image
 
+  # Docker push is intentionally disabled for first successful CI run
   docker_push:
     needs: docker_build
-    if: ${{ false }}   # ✅ keep disabled for first successful CI
+    if: false
     uses: JYOTHIKA9032/dotnet-reusable-workflows/.github/workflows/docker-push.yml@v1
     with:
       runner: ubuntu-latest
-      registry: <your-container-registry>
+      registry: your-container-registry
       image_name: dotnet8-sample
       image_tag: latest
       docker_image_artifact: docker-image
     secrets:
       REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
       REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+``
