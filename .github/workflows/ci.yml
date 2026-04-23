@@ -1,4 +1,4 @@
-name: CI - .NET 8 (caller)
+name: CI - .NET 8 with Docker (caller)
 
 on:
   push:
